@@ -1,0 +1,7 @@
+- algorithm for effecient many-agent path finding:
+  - do A* starting from both the front and the end
+  - have two queues, one for each starting point
+  - once a new value is added to a queue, check if it's pairing with every value in the other queue already has a route saved
+  - once the route is found, store every permutation of it
+    - perhaps this can be a linked list kind of situation to reduce power
+      - like best_move<(A, B)> = C, do C, then you can do best_ move<(C, B)> to get the next move

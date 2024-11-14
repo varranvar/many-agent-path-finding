@@ -15,4 +15,3 @@ class Grid():
     def __getitem__(self, coordinate):
         return self.grid[coordinate[0] + 1][coordinate[1] + 1]
     
-

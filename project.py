@@ -1,16 +1,16 @@
 import pygame 
 import random
-import math
+import time
 from grid import Grid
 from agent import Agent
-from pathfinding import pathfind
+from pathfinding import *
 
-GRID_WIDTH = 80
-GRID_HEIGHT = 50
-SCREEN_WIDTH = 800
+GRID_WIDTH = 250
+GRID_HEIGHT = 250
+SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
-AGENT_COUNT = 10
-TRANSITION_FRAMES = 100
+AGENT_COUNT = 1000
+TRANSITION_FRAMES = 3
 
 # Initialize pygame window.
 pygame.init() 
@@ -32,6 +32,7 @@ while True:
         break
 
 # Initialize and place agents.
+print("Initializing agents...")
 agents = []
 while(len(agents) < AGENT_COUNT):
     x = random.randint(0, GRID_WIDTH)
@@ -43,13 +44,19 @@ while(len(agents) < AGENT_COUNT):
         agents.append(agent)
   
 # Pathfind.
-pathfind(grid, agents)
+print("Pathfinding...")
+start_time = time.perf_counter()
+a_star(grid, agents)
+end_time = time.perf_counter()
+elapsed_time = end_time - start_time
+print("Elapsed time: ", elapsed_time)
+
   
 # Draw paths.
+print("Drawing...")
 frame = 0
 while not exit: 
     canvas.fill((0, 0, 0))
-    
     
     # If not a transition frame, update the agent location.
     if frame == 0:
@@ -68,7 +75,7 @@ while not exit:
                 px = x * rw
                 py = y * rh
                 pygame.draw.rect(canvas, (255, 255 * (x / GRID_WIDTH), 255 * (y / GRID_HEIGHT)), pygame.Rect(px, py, rw, rh)) 
-
+                
     # Draw agents.
     transition = frame / TRANSITION_FRAMES
     for agent in agents:
@@ -82,6 +89,15 @@ while not exit:
             canvas, 
             (255 * (agent.x / GRID_WIDTH), 255 * (agent.y / GRID_HEIGHT), 255), 
             pygame.Rect(tx, ty, rw, rh)
+        )     
+        
+        gx = agent.goal[0] * rw
+        gy = agent.goal[1] * rh
+        pygame.draw.circle(
+            canvas, 
+            (255 * (agent.x / GRID_WIDTH), 255 * (agent.y / GRID_HEIGHT), 255), 
+            (gx + rw / 2, gy + rh / 2),
+            rw / 4
         )     
         
     for event in pygame.event.get(): 
