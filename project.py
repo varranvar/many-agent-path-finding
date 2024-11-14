@@ -1,23 +1,34 @@
+import pygame 
+from grid import Grid
 
-WIDTH = 1000
-HEIGHT = 1000
+GRID_WIDTH = 10
+GRID_HEIGHT = 10
+SCREEN_WIDTH = 500
+SCREEN_HEIGHT = 500
 
-def Grid():
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.grid = [
-            [
-                x == 0 or y == 0 or x == width - 1 or y == height - 1
-                for y in range(0, height + 2)
-            ] 
-            for x in range(0, width + 2)
-        ]
-         
-    def __getitem__(self, coordinate):
-        return self.grid[coordinate.x + 1][coordinate.y + 1]
+pygame.init() 
+canvas = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) 
+pygame.display.set_caption("Many Agent Path Finding") 
+exit = False
+  
+grid = Grid(GRID_WIDTH, GRID_HEIGHT)
+  
+while not exit: 
+    canvas.fill((0, 0, 0))
     
+    rw = SCREEN_WIDTH / GRID_WIDTH
+    rh = SCREEN_HEIGHT / GRID_HEIGHT
     
-grid = Grid(WIDTH, HEIGHT)
+    print()
+    for x in range(0, GRID_WIDTH):
+        for y in range(0, GRID_HEIGHT):
+            if grid[x, y]:
+                px = x * rw
+                py = y * rh
+                pygame.draw.rect(canvas, (255, x * 10, y * 10), pygame.Rect(px, py, rw, rh)) 
 
-
+    for event in pygame.event.get(): 
+        if event.type == pygame.QUIT: 
+            exit = True
+            
+    pygame.display.update() 
