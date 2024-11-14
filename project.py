@@ -9,8 +9,8 @@ GRID_WIDTH = 250
 GRID_HEIGHT = 250
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
-AGENT_COUNT = 1000
-TRANSITION_FRAMES = 3
+AGENT_COUNT = 10000
+TRANSITION_FRAMES = 0
 
 # Initialize pygame window.
 pygame.init() 
@@ -46,7 +46,7 @@ while(len(agents) < AGENT_COUNT):
 # Pathfind.
 print("Pathfinding...")
 start_time = time.perf_counter()
-a_star(grid, agents)
+a_star_simple_overlap(grid, agents)
 end_time = time.perf_counter()
 elapsed_time = end_time - start_time
 print("Elapsed time: ", elapsed_time)
@@ -74,10 +74,11 @@ while not exit:
             if grid[(x, y)]:
                 px = x * rw
                 py = y * rh
-                pygame.draw.rect(canvas, (255, 255 * (x / GRID_WIDTH), 255 * (y / GRID_HEIGHT)), pygame.Rect(px, py, rw, rh)) 
+                #pygame.draw.rect(canvas, (200, 200 * (x / GRID_WIDTH), 200 * (y / GRID_HEIGHT)), pygame.Rect(px, py, rw, rh)) 
+                pygame.draw.rect(canvas, (100, 100, 100), pygame.Rect(px, py, rw, rh)) 
                 
     # Draw agents.
-    transition = frame / TRANSITION_FRAMES
+    transition = 1 if TRANSITION_FRAMES == 0 else frame / TRANSITION_FRAMES
     for agent in agents:
         x = agent.x * rw
         y = agent.y * rh
@@ -95,9 +96,9 @@ while not exit:
         gy = agent.goal[1] * rh
         pygame.draw.circle(
             canvas, 
-            (255 * (agent.x / GRID_WIDTH), 255 * (agent.y / GRID_HEIGHT), 255), 
+            (255, 0, 0), 
             (gx + rw / 2, gy + rh / 2),
-            rw / 4
+            rw
         )     
         
     for event in pygame.event.get(): 
@@ -107,4 +108,4 @@ while not exit:
     pygame.display.update() 
     
     # Update transition frame.
-    frame = (frame + 1) % TRANSITION_FRAMES
+    frame = 0 if TRANSITION_FRAMES == 0 else (frame + 1) % TRANSITION_FRAMES
