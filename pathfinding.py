@@ -30,19 +30,20 @@ def heuristic(x1, y1, x2, y2):
 
 def a_star(grid, agents):
     for agent in agents:
-        visited = {(agent.x, agent.y) : (0, None, None)}
+        agent.path = []
+        visited = {(agent.x, agent.y) : (0, 0, None, None)}
         queue = [(0, agent.x, agent.y)]
         
         while len(queue) > 0:
-            (dist, x, y) = heappop(queue)
+            (_, x, y) = heappop(queue)
             
             # Check if goal is satisfied.
             if x == agent.goal[0] and y == agent.goal[1]:
                 # Trace path.
                 agent.path = [(x, y)]
                 while True:
-                    (_, px, py) = visited[agent.path[0]]
-                    if px == None or py == None:
+                    (_, _, px, py) = visited[agent.path[0]]
+                    if px is None or py is None:
                         break
                     else:
                         agent.path.insert(0, (px, py))
@@ -53,19 +54,20 @@ def a_star(grid, agents):
                 nx = x + direction[0]
                 ny = y + direction[1]
                 if not grid[(nx, ny)]:
-                    g = dist + 1
+                    g = visited[(x, y)][1] + 1
                     h = heuristic(nx, ny, agent.goal[0], agent.goal[1])
                     f = g + h
                     
                     if not (nx, ny) in visited or visited[(nx, ny)][0] > f:
-                        visited[(nx, ny)] = (g, x, y)
+                        visited[(nx, ny)] = (f, g, x, y)
                         heappush(queue, (f, nx, ny))
 
         
-def a_star_simple_overlap(grid, agents):
+def a_star_naive_overlap(grid, agents):
     paths = {}
     for agent in agents:
-        visited = {(agent.x, agent.y) : (0, None, None)}
+        agent.path = []
+        visited = {(agent.x, agent.y) : (0, 0, None, None)}
         queue = [(0, agent.x, agent.y)]
         
         while len(queue) > 0:
@@ -87,8 +89,8 @@ def a_star_simple_overlap(grid, agents):
                 
                 # Trace path from visited nodes.
                 while True:
-                    (_, px, py) = visited[agent.path[0]]
-                    if px == None or py == None:
+                    (_, _, px, py) = visited[agent.path[0]]
+                    if px is None or py is None:
                         break
                     else:
                         paths[(px, py)] = agent.path[0]
@@ -100,12 +102,66 @@ def a_star_simple_overlap(grid, agents):
                 nx = x + direction[0]
                 ny = y + direction[1]
                 if not grid[(nx, ny)]:
-                    g = dist + 1
+                    g = visited[(x, y)][1] + 1
                     h = heuristic(nx, ny, agent.goal[0], agent.goal[1])
                     f = g + h
                     
                     if not (nx, ny) in visited or visited[(nx, ny)][0] > f:
-                        visited[(nx, ny)] = (g, x, y)
+                        visited[(nx, ny)] = (f, g, x, y)
+                        heappush(queue, (f, nx, ny))
+
+        
+def a_star_overlap(grid, agents):
+    paths = {(agents[0].goal) : (0, None, None)}
+    count = 0
+    for agent in agents:
+        count += 1
+        agent.path = []
+        visited = {(agent.x, agent.y) : (0, 0, None, None)}
+        queue = [(0, agent.x, agent.y)]
+        
+        while len(queue) > 0:
+            (dist, x, y) = heappop(queue)
+
+            # Check if goal is satisfied.
+            overlap = (x, y) in paths
+            if x == agent.goal[0] and y == agent.goal[1] or overlap:
+                agent.path = [(x, y)]
+                
+                # Reuse path if there is overlap with already seen paths.
+                if overlap:
+                    while True:
+                        _, px, py = paths[agent.path[-1]]
+                        if px is None or py is None:
+                            break
+                        agent.path.append((px, py))
+                
+                # Trace path from visited nodes.
+                while True:
+                    x, y = agent.path[0]
+                    _, _, px, py = visited[(x, y)]
+                    if px is None or py is None:
+                        break
+
+                    agent.path.insert(0, (px, py))
+                    paths[(px, py)] = (paths[(x, y)][0] + 1, x, y)
+                    
+                break
+            
+            # Add neighbors.
+            for direction in DIRECTIONS:
+                nx = x + direction[0]
+                ny = y + direction[1]
+                if not grid[(nx, ny)]:
+                    g = visited[(x, y)][1] + 1
+                    f = g
+                    if (nx, ny) in paths:
+                        f += paths[(nx, ny)][0]
+                    else:
+                        f += heuristic(nx, ny, agent.goal[0], agent.goal[1])
+                        
+                    if not (nx, ny) in visited or visited[(nx, ny)][0] > f:
+                        visited[(nx, ny)] = (f, g, x, y)
                         heappush(queue, (f, nx, ny))
 
         

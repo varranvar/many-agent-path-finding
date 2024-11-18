@@ -5,11 +5,11 @@ from grid import Grid
 from agent import Agent
 from pathfinding import *
 
-GRID_WIDTH = 250
+GRID_WIDTH = 400
 GRID_HEIGHT = 250
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 500
-AGENT_COUNT = 10000
+SCREEN_WIDTH = 1600
+SCREEN_HEIGHT = 1000
+AGENT_COUNT = 1000
 TRANSITION_FRAMES = 0
 
 # Initialize pygame window.
@@ -43,14 +43,30 @@ while(len(agents) < AGENT_COUNT):
         agent.py = y
         agents.append(agent)
   
+agents_copy = agents.copy()
+
 # Pathfind.
-print("Pathfinding...")
+print("Pathfinding with default A*...")
 start_time = time.perf_counter()
-a_star_simple_overlap(grid, agents)
+a_star(grid, agents_copy) 
 end_time = time.perf_counter()
 elapsed_time = end_time - start_time
 print("Elapsed time: ", elapsed_time)
 
+print("Pathfinding with path caching...")
+start_time = time.perf_counter()
+a_star_overlap(grid, agents) 
+end_time = time.perf_counter()
+elapsed_time = end_time - start_time
+print("Elapsed time: ", elapsed_time)
+
+  
+# Ensure both techniques produce the same result.
+for i in range(0, AGENT_COUNT):
+    a = agents[i]
+    b = agents_copy[i]
+    for i in range(0, len(a.path)):
+        assert a.path[i] == b.path[i]
   
 # Draw paths.
 print("Drawing...")
