@@ -7,7 +7,6 @@ DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 def random_walk(grid, agents):
     
-    
     for agent in agents:
         agent.path = []
         cx = agent.x

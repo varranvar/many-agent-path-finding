@@ -13,7 +13,7 @@ AGENT_COUNT = 1000
 TRANSITION_FRAMES = 0
 
 # Initialize pygame window.
-pygame.init() 
+pygame.init()
 canvas = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) 
 pygame.display.set_caption("Many Agent Path Finding") 
 exit = False
