@@ -5,14 +5,15 @@
 - [X] Random Walk
 - [X] Basic A Star
 - [X] A Star, Naive Overlap Check, Single Goal
-- [ ] A Star, Optimal Overlap Check, Singe Goal
-- [ ] A Star, Optimal Overlap Check, Multiple Goals
+- [X] A Star, Overlap Check, Singe Goal
+- [X] A Star, Overlap Check, Multiple Goals
 - [ ] Corner Reduction
+- [ ] A Star, Overlap Check, Single Goal, Corner Reduction
 - [ ] A Star, Optimal Overlap Check, Multiple Goals, Corner Reduction
-- [ ] Faster drawing for 100,000 agents (perhaps by drawing to a second surface then rendering to main screen)
+- [ ] Faster drawing for high number of agents
 - [ ] Maze generation
 - [ ] Modifying the maze with mouse
-- [ ] Data collection
+- [X] Data collection
 
 # Notes on the algorithms
 

@@ -7,10 +7,10 @@ from pathfinding import *
 
 GRID_WIDTH = 400
 GRID_HEIGHT = 250
-SCREEN_WIDTH = 1600
-SCREEN_HEIGHT = 1000
-AGENT_COUNT = 100
-TRANSITION_FRAMES = 10
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 500
+AGENT_COUNT = 1000
+TRANSITION_FRAMES = 0
 
 # Initialize pygame window.
 pygame.init() 
@@ -46,16 +46,16 @@ while(len(agents) < AGENT_COUNT):
 agents_copy = agents.copy()
 
 # Pathfind.
-print("Pathfinding with default A*...")
+print("Pathfinding with overlap optmization...")
 start_time = time.perf_counter()
-a_star(grid, agents_copy) 
+a_star_optimized(grid, agents_copy) 
 end_time = time.perf_counter()
 elapsed_time = end_time - start_time
 print("Elapsed time: ", elapsed_time)
 
-print("Pathfinding with path caching...")
+print("Pathfinding with corner reduction...")
 start_time = time.perf_counter()
-a_star_optimized(grid, agents) 
+a_star_optimized_reduced(grid, agents) 
 end_time = time.perf_counter()
 elapsed_time = end_time - start_time
 print("Elapsed time: ", elapsed_time)
