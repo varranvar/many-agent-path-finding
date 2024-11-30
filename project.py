@@ -9,8 +9,8 @@ GRID_WIDTH = 400
 GRID_HEIGHT = 250
 SCREEN_WIDTH = 1600
 SCREEN_HEIGHT = 1000
-AGENT_COUNT = 1000
-TRANSITION_FRAMES = 0
+AGENT_COUNT = 100
+TRANSITION_FRAMES = 10
 
 # Initialize pygame window.
 pygame.init()
@@ -55,7 +55,7 @@ print("Elapsed time: ", elapsed_time)
 
 print("Pathfinding with path caching...")
 start_time = time.perf_counter()
-a_star_overlap(grid, agents) 
+a_star_optimized(grid, agents) 
 end_time = time.perf_counter()
 elapsed_time = end_time - start_time
 print("Elapsed time: ", elapsed_time)
@@ -65,6 +65,7 @@ print("Elapsed time: ", elapsed_time)
 for i in range(0, AGENT_COUNT):
     a = agents[i]
     b = agents_copy[i]
+    assert len(a.path) == len(b.path)
     for i in range(0, len(a.path)):
         assert a.path[i] == b.path[i]
   
