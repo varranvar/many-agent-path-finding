@@ -4,7 +4,7 @@ class Grid():
     def __init__(self, width, height, generator = ''):
         self.width = width
         self.height = height
-        if generator == 'backtrack':
+        if generator == 'maze':
             self.grid = [[True] * (height+2) for _ in range(width+2)]
             x, y = 1, 1
             self.grid[x][y] = False
