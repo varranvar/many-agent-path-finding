@@ -459,6 +459,51 @@ def a_star_optimized_reduced_straight(grid, agents):
                         heappush(queue, (f, nx, ny))
     #print(count)
 
+def a_star_collision_aware(grid, agents):
+    occupied = set()
+    for agent in agents:
+        agent.path = []
+        visited = {(agent.x, agent.y, 0) : (0, 0, None, None)}
+        queue = [(0, 0, agent.x, agent.y)]
+        
+        while len(queue) > 0:
+            (_, t, x, y) = heappop(queue)
+            
+            # Check if goal is satisfied.
+            if x == agent.goal[0] and y == agent.goal[1]:
+                # Trace path.
+                agent.path = [(x, y)]
+                while True:
+                    (_, _, px, py) = visited[(x, y, t)]
+                    if px is None or py is None:
+                        break
+                    else:
+                        agent.path.insert(0, (px, py))
+                        x, y, t = px, py, t - 1
+                for step, (px, py) in enumerate(agent.path):
+                    occupied.add((px, py, step))
+                break
+
+            if((x, y, t) in occupied):
+                continue
+
+            #print(x, y, t)
+            
+            # Add neighbors.
+            for direction in DIRECTIONS + [(0, 0)]:
+                nx = x + direction[0]
+                ny = y + direction[1]
+                nt = t + 1
+                if not grid[(nx, ny)] and (nx, ny, nt) not in occupied:
+                    g = visited[(x, y, t)][1] + 1
+                    h = heuristic(nx, ny, agent.goal[0], agent.goal[1])
+                    f = g + h
+                    
+                    if not (nx, ny, nt) in visited or visited[(nx, ny, nt)][0] > f:
+                        visited[(nx, ny, nt)] = (f, g, x, y)
+                        heappush(queue, (f, nt, nx, ny))
+            occupied.add((x, y, t))
+
 def calculate_corners(grid):
     corners = []
     for x in range(grid.width):
