@@ -84,13 +84,3 @@ class Grid():
 
     def __getitem__(self, coordinate):
         return self.grid[coordinate[0] + 1][coordinate[1] + 1]
-
-g = Grid(400, 400, 'bfs')
-for row in range(g.width+2):
-    l = []
-    for col in range(g.height+2):
-        if g.grid[row][col]:
-            l.append('#')
-        else:
-            l.append(' ')
-    print(''.join(l))

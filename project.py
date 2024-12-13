@@ -7,10 +7,10 @@ from pathfinding import *
 
 GRID_WIDTH = 400
 GRID_HEIGHT = 250
-SCREEN_WIDTH = 1600
-SCREEN_HEIGHT = 1000
-AGENT_COUNT = 100
-TRANSITION_FRAMES = 10
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 500
+AGENT_COUNT = 30000
+TRANSITION_FRAMES = 0
 
 # Initialize pygame window.
 pygame.init() 
@@ -19,7 +19,7 @@ pygame.display.set_caption("Many Agent Path Finding")
 exit = False
   
 # Initalize grid and generate maze.
-grid = Grid(GRID_WIDTH, GRID_HEIGHT)
+grid = Grid(GRID_WIDTH, GRID_HEIGHT, generator='maze')
 # TODO: Generate maze.
 
 # Pick goal location.
@@ -46,21 +46,22 @@ while(len(agents) < AGENT_COUNT):
 agents_copy = agents.copy()
 
 # Pathfind.
-print("Pathfinding with default A*...")
+print("Pathfinding with overlap optmization...")
 start_time = time.perf_counter()
-a_star(grid, agents_copy) 
+a_star_optimized(grid, agents_copy) 
 end_time = time.perf_counter()
 elapsed_time = end_time - start_time
 print("Elapsed time: ", elapsed_time)
 
-print("Pathfinding with path caching...")
+print("Pathfinding with corner reduction...")
 start_time = time.perf_counter()
-a_star_optimized(grid, agents) 
+a_star_optimized_reduced_straight(grid, agents) 
 end_time = time.perf_counter()
 elapsed_time = end_time - start_time
 print("Elapsed time: ", elapsed_time)
 
-  
+#corners = calculate_corners(grid)
+
 # Ensure both techniques produce the same result.
 for i in range(0, AGENT_COUNT):
     a = agents[i]
@@ -91,8 +92,11 @@ while not exit:
             if grid[(x, y)]:
                 px = x * rw
                 py = y * rh
-                #pygame.draw.rect(canvas, (200, 200 * (x / GRID_WIDTH), 200 * (y / GRID_HEIGHT)), pygame.Rect(px, py, rw, rh)) 
                 pygame.draw.rect(canvas, (100, 100, 100), pygame.Rect(px, py, rw, rh)) 
+            #elif (x, y) in corners:
+            #    px = x * rw
+            #    py = y * rh
+            #    pygame.draw.rect(canvas, (100, 200, 200), pygame.Rect(px, py, rw, rh)) 
                 
     # Draw agents.
     transition = 1 if TRANSITION_FRAMES == 0 else frame / TRANSITION_FRAMES
@@ -114,8 +118,8 @@ while not exit:
         pygame.draw.circle(
             canvas, 
             (255, 0, 0), 
-            (gx + rw / 2, gy + rh / 2),
-            rw
+            (gx + rw / 2, gy + rh / 3),
+            rw / 2
         )     
         
     for event in pygame.event.get(): 
