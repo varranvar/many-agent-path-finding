@@ -8,7 +8,7 @@ GRID_WIDTH = 400
 GRID_HEIGHT = 250
 SCREEN_WIDTH = 1600
 SCREEN_HEIGHT = 1000
-ITERATIONS = 10
+ITERATIONS = 30
 agent_counts = range(100, 1100, 100)
 
 data = []
@@ -60,7 +60,7 @@ for agent_count in agent_counts:
     a = sum_a / ITERATIONS
     b = sum_b / ITERATIONS
     data.append((a, b))
-    print(agent_count, a, b)
+    print(agent_count, ",", a, ",", b)
     
 
 for i in range(len(data)):
