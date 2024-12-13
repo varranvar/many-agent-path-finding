@@ -20,7 +20,7 @@ pygame.display.set_caption("Many Agent Path Finding with Collisions")
 exit = False
 
 # Initalize grid and generate maze.
-grid = Grid(GRID_WIDTH, GRID_HEIGHT, generator='wilson')
+grid = Grid(GRID_WIDTH, GRID_HEIGHT, generator='')
 # TODO: Generate maze.
 
 # Pick goal location.
@@ -48,7 +48,7 @@ while(len(agents) < AGENT_COUNT):
 agents_copy = agents.copy()
 
 # Pathfind.
-print("Pathfinding with overlap optmization...")
+print("Pathfinding without optmization...")
 start_time = time.perf_counter()
 a_star_collision_aware(grid, agents_copy) 
 end_time = time.perf_counter()
@@ -65,6 +65,7 @@ print("Elapsed time: ", elapsed_time)
 #corners = calculate_corners(grid)
   
 # Draw paths.
+"""
 print("Drawing...")
 frame = 0
 while not exit: 
@@ -124,3 +125,5 @@ while not exit:
     
     # Update transition frame.
     frame = 0 if TRANSITION_FRAMES == 0 else (frame + 1) % TRANSITION_FRAMES
+
+"""

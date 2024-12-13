@@ -8,8 +8,8 @@ GRID_WIDTH = 400
 GRID_HEIGHT = 250
 SCREEN_WIDTH = 1600
 SCREEN_HEIGHT = 1000
-ITERATIONS = 2
-agent_counts = range(10, 100, 10)
+ITERATIONS = 30
+agent_counts = range(100, 1100, 100)
 
 data = []
 
@@ -19,7 +19,7 @@ for agent_count in agent_counts:
     
     for i in range(ITERATIONS):
         print("ITERATION", i + 1)
-        grid = Grid(GRID_WIDTH, GRID_HEIGHT, generator = 'wilson')
+        grid = Grid(GRID_WIDTH, GRID_HEIGHT, generator='wilson')
 
         # Pick goal.
         goal_x = 0
@@ -52,7 +52,7 @@ for agent_count in agent_counts:
         sum_a += elapsed_time_a
 
         start_time = time.perf_counter()
-        a_star_collision_aware(grid, agents) 
+        a_star_optimized(grid, agents) 
         end_time = time.perf_counter()
         elapsed_time_b = end_time - start_time
         sum_b += elapsed_time_b
