@@ -9,7 +9,7 @@ GRID_WIDTH = 400
 GRID_HEIGHT = 250
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 500
-AGENT_COUNT = 3
+AGENT_COUNT = 100
 TRANSITION_FRAMES = 0
 agent_states = set()
 
@@ -20,7 +20,7 @@ pygame.display.set_caption("Many Agent Path Finding with Collisions")
 exit = False
 
 # Initalize grid and generate maze.
-grid = Grid(GRID_WIDTH, GRID_HEIGHT, generator='')
+grid = Grid(GRID_WIDTH, GRID_HEIGHT, generator='wilson')
 # TODO: Generate maze.
 
 # Pick goal location.
@@ -50,7 +50,7 @@ agents_copy = agents.copy()
 # Pathfind.
 print("Pathfinding without optmization...")
 start_time = time.perf_counter()
-a_star_collision_aware(grid, agents_copy) 
+a_star_with_collision_avoidance(grid, agents_copy) 
 end_time = time.perf_counter()
 elapsed_time = end_time - start_time
 print("Elapsed time: ", elapsed_time)
@@ -65,7 +65,7 @@ print("Elapsed time: ", elapsed_time)
 #corners = calculate_corners(grid)
   
 # Draw paths.
-"""
+
 print("Drawing...")
 frame = 0
 while not exit: 
@@ -125,5 +125,3 @@ while not exit:
     
     # Update transition frame.
     frame = 0 if TRANSITION_FRAMES == 0 else (frame + 1) % TRANSITION_FRAMES
-
-"""
