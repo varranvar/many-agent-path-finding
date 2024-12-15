@@ -9,14 +9,14 @@ GRID_WIDTH = 400
 GRID_HEIGHT = 250
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 500
-AGENT_COUNT = 30000
+AGENT_COUNT = 100
 TRANSITION_FRAMES = 0
 agent_states = set()
 
 # Initialize pygame window.
 pygame.init()
 canvas = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) 
-pygame.display.set_caption("Many Agent Path Finding") 
+pygame.display.set_caption("Many Agent Path Finding with Collisions") 
 exit = False
 
 # Initalize grid and generate maze.
@@ -48,31 +48,24 @@ while(len(agents) < AGENT_COUNT):
 agents_copy = agents.copy()
 
 # Pathfind.
-print("Pathfinding with overlap optmization...")
+print("Pathfinding without optmization...")
 start_time = time.perf_counter()
-a_star_optimized(grid, agents_copy) 
+a_star_with_collision_avoidance(grid, agents_copy) 
 end_time = time.perf_counter()
 elapsed_time = end_time - start_time
 print("Elapsed time: ", elapsed_time)
 
-print("Pathfinding with corner reduction...")
-start_time = time.perf_counter()
-a_star_optimized_reduced_straight(grid, agents) 
-end_time = time.perf_counter()
-elapsed_time = end_time - start_time
-print("Elapsed time: ", elapsed_time)
+#print("Pathfinding with corner reduction...")
+#start_time = time.perf_counter()
+#a_star_optimized_reduced_straight(grid, agents) 
+#end_time = time.perf_counter()
+#elapsed_time = end_time - start_time
+#print("Elapsed time: ", elapsed_time)
 
 #corners = calculate_corners(grid)
-
-# Ensure both techniques produce the same result.
-for i in range(0, AGENT_COUNT):
-    a = agents[i]
-    b = agents_copy[i]
-    assert len(a.path) == len(b.path)
-    for i in range(0, len(a.path)):
-        assert a.path[i] == b.path[i]
   
 # Draw paths.
+
 print("Drawing...")
 frame = 0
 while not exit: 

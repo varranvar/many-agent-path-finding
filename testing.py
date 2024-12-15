@@ -19,7 +19,7 @@ for agent_count in agent_counts:
     
     for i in range(ITERATIONS):
         print("ITERATION", i + 1)
-        grid = Grid(GRID_WIDTH, GRID_HEIGHT)
+        grid = Grid(GRID_WIDTH, GRID_HEIGHT, generator='wilson')
 
         # Pick goal.
         goal_x = 0

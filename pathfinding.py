@@ -1,4 +1,5 @@
 from heapq import *
+import heapq
 import random
 from grid import Grid
 from agent import Agent
@@ -458,6 +459,78 @@ def a_star_optimized_reduced_straight(grid, agents):
                         visited[(nx, ny)] = (f, g, x, y)
                         heappush(queue, (f, nx, ny))
     #print(count)
+
+def a_star_with_collision_avoidance(grid, agents):
+    # Reservation table to track occupied cells over time
+    reservations = {}
+
+    # Cache for Manhattan distance heuristic
+    heuristic_cache = {}
+
+    def heuristic_2(x1, y1, x2, y2):
+        if (x1, y1, x2, y2) not in heuristic_cache:
+            heuristic_cache[(x1, y1, x2, y2)] = abs(x1 - x2) + abs(y1 - y2)
+        return heuristic_cache[(x1, y1, x2, y2)]
+
+    # Directions for movements
+    DIRECTIONS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+    # Plan paths for each agent sequentially
+    for agent in agents:
+        visited = {}
+        queue = []
+        agent.path = []
+        start_state = (0, 0, agent.x, agent.y)  # (f, t, x, y)
+        heapq.heappush(queue, start_state)
+        visited[(agent.x, agent.y, 0)] = (None, None)  # (prev_x, prev_y)
+
+        found_goal = False
+
+        while queue and not found_goal:
+            _, t, x, y = heapq.heappop(queue)
+
+            # Check if goal is reached and no future conflicts
+            if (x, y) == agent.goal:
+                agent.path = [(x, y)]
+                while (x, y, t) in visited:
+                    px, py = visited[(x, y, t)]
+                    if px is None or py is None:
+                        break
+                    agent.path.insert(0, (px, py))
+                    x, y, t = px, py, t - 1
+
+                # Reserve path in the reservation table
+                for step, (px, py) in enumerate(agent.path):
+                    reservations[(px, py, step)] = True
+
+                # Clear reservations after agent reaches goal
+                for step in range(len(agent.path)):
+                    reservations.pop((agent.path[-1][0], agent.path[-1][1], step), None)
+
+                found_goal = True
+                break
+
+            # Add neighbors with spatial partitioning
+            for dx, dy in DIRECTIONS + [(0, 0)]:  # Include "wait" move
+                nx, ny = x + dx, y + dy
+                nt = t + 1
+
+                if grid[(nx, ny)] == 0:
+                    if (nx, ny, nt) in reservations:
+                        continue  # Skip reserved cells
+
+                    cost = heuristic_2(nx, ny, agent.goal[0], agent.goal[1])
+                    new_state = (nt + cost, nt, nx, ny)
+
+                    if (nx, ny, nt) not in visited or new_state[0] < visited[(nx, ny, nt)][0]:
+                        visited[(nx, ny, nt)] = (x, y)
+                        heapq.heappush(queue, new_state)
+
+                    # Reserve cells by time intervals for spatial partitioning
+                    for time in range(nt, nt + 10):  # Example time interval grouping
+                        reservations[(nx, ny, time)] = True
+
+    return [agent.path for agent in agents]
 
 def calculate_corners(grid):
     corners = []
